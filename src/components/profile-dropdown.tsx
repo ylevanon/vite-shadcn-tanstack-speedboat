@@ -21,8 +21,11 @@ export function ProfileDropdown() {
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-            <Avatar className='h-8 w-8'>
+          <Button
+            variant='ghost'
+            className='relative h-10 w-10 rounded-xl border border-transparent bg-background/70 p-0 hover:border-border/70'
+          >
+            <Avatar className='h-9 w-9'>
               <AvatarImage src='/avatars/01.png' alt='@shadcn' />
               <AvatarFallback>SN</AvatarFallback>
             </Avatar>

@@ -5,16 +5,21 @@ import { useTasks } from './tasks-provider'
 export function TasksPrimaryButtons() {
   const { setOpen } = useTasks()
   return (
-    <div className='flex gap-2'>
+    <div className='flex flex-wrap gap-2'>
       <Button
         variant='outline'
-        className='space-x-1'
+        className='h-10 rounded-xl border-border/70 bg-background/80 px-4 font-medium'
         onClick={() => setOpen('import')}
       >
-        <span>Import</span> <Download size={18} />
+        <Download className='size-4' />
+        <span>Import CSV</span>
       </Button>
-      <Button className='space-x-1' onClick={() => setOpen('create')}>
-        <span>Create</span> <Plus size={18} />
+      <Button
+        className='h-10 rounded-xl px-4 font-semibold shadow-md'
+        onClick={() => setOpen('create')}
+      >
+        <Plus className='size-4' />
+        <span>New Task</span>
       </Button>
     </div>
   )

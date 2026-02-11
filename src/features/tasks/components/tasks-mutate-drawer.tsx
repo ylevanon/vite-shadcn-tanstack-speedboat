@@ -174,6 +174,12 @@ export function TasksMutateDrawer({
                     >
                       <FormItem className='flex items-center'>
                         <FormControl>
+                          <RadioGroupItem value='critical' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Critical</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center'>
+                        <FormControl>
                           <RadioGroupItem value='high' />
                         </FormControl>
                         <FormLabel className='font-normal'>High</FormLabel>

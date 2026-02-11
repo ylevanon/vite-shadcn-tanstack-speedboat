@@ -1,10 +1,30 @@
 import { type ColumnDef } from '@tanstack/react-table'
+import { format, formatDistanceToNowStrict } from 'date-fns'
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { labels, priorities, statuses } from '../data/data'
 import { type Task } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
+
+const statusTone: Record<string, string> = {
+  backlog:
+    'border-slate-300/70 bg-slate-100/70 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200',
+  todo: 'border-blue-300/70 bg-blue-100/70 text-blue-700 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-300',
+  'in progress':
+    'border-cyan-300/70 bg-cyan-100/70 text-cyan-700 dark:border-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-300',
+  done: 'border-emerald-300/70 bg-emerald-100/70 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
+  canceled:
+    'border-zinc-300/70 bg-zinc-100/70 text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/70 dark:text-zinc-300',
+}
+
+const priorityTone: Record<string, string> = {
+  low: 'text-emerald-600 dark:text-emerald-400',
+  medium: 'text-sky-600 dark:text-sky-400',
+  high: 'text-amber-600 dark:text-amber-400',
+  critical: 'text-rose-600 dark:text-rose-400',
+}
 
 export const tasksColumns: ColumnDef<Task>[] = [
   {
@@ -36,7 +56,11 @@ export const tasksColumns: ColumnDef<Task>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Task' />
     ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+    cell: ({ row }) => (
+      <div className='w-[110px] font-mono text-xs font-semibold tracking-wide text-muted-foreground'>
+        {row.getValue('id')}
+      </div>
+    ),
     enableSorting: false,
     enableHiding: false,
   },
@@ -46,16 +70,27 @@ export const tasksColumns: ColumnDef<Task>[] = [
       <DataTableColumnHeader column={column} title='Title' />
     ),
     meta: {
-      className: 'ps-1 max-w-0 w-2/3',
-      tdClassName: 'ps-4',
+      className: 'max-w-0 w-[36%]',
+      tdClassName: 'ps-4 py-4',
     },
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label)
 
       return (
-        <div className='flex space-x-2'>
-          {label && <Badge variant='outline'>{label.label}</Badge>}
-          <span className='truncate font-medium'>{row.getValue('title')}</span>
+        <div className='min-w-0 space-y-1'>
+          <div className='flex items-center gap-2'>
+            {label && (
+              <Badge variant='outline' className='rounded-md px-2 py-0.5'>
+                {label.label}
+              </Badge>
+            )}
+            <span className='truncate text-sm font-semibold'>
+              {row.getValue('title')}
+            </span>
+          </div>
+          <p className='truncate text-xs text-muted-foreground'>
+            {row.original.description ?? 'No additional notes'}
+          </p>
         </div>
       )
     },
@@ -76,11 +111,18 @@ export const tasksColumns: ColumnDef<Task>[] = [
       }
 
       return (
-        <div className='flex w-[100px] items-center gap-2'>
+        <div className='flex w-[130px] items-center gap-2'>
           {status.icon && (
-            <status.icon className='size-4 text-muted-foreground' />
+            <status.icon className='size-4 text-muted-foreground/80' />
           )}
-          <span>{status.label}</span>
+          <span
+            className={cn(
+              'inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold',
+              statusTone[status.value]
+            )}
+          >
+            {status.label}
+          </span>
         </div>
       )
     },
@@ -104,11 +146,13 @@ export const tasksColumns: ColumnDef<Task>[] = [
       }
 
       return (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2 text-sm font-semibold'>
           {priority.icon && (
-            <priority.icon className='size-4 text-muted-foreground' />
+            <priority.icon
+              className={cn('size-4 text-muted-foreground', priorityTone[priority.value])}
+            />
           )}
-          <span>{priority.label}</span>
+          <span className={cn(priorityTone[priority.value])}>{priority.label}</span>
         </div>
       )
     },
@@ -117,7 +161,44 @@ export const tasksColumns: ColumnDef<Task>[] = [
     },
   },
   {
+    accessorKey: 'assignee',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Assignee' />
+    ),
+    cell: ({ row }) => (
+      <div className='truncate text-sm font-medium'>{row.getValue('assignee')}</div>
+    ),
+  },
+  {
+    id: 'dueDate',
+    accessorFn: (row) => row.dueDate.getTime(),
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Due Date' />
+    ),
+    cell: ({ row }) => {
+      const dueDate = row.original.dueDate
+      const isOverdue =
+        dueDate.getTime() < Date.now() &&
+        !['done', 'canceled'].includes(row.original.status)
+
+      return (
+        <div className='space-y-0.5'>
+          <p className={cn('text-sm font-medium', isOverdue && 'text-destructive')}>
+            {format(dueDate, 'MMM d, yyyy')}
+          </p>
+          <p className='text-xs text-muted-foreground'>
+            {formatDistanceToNowStrict(dueDate, { addSuffix: true })}
+          </p>
+        </div>
+      )
+    },
+  },
+  {
     id: 'actions',
+    meta: {
+      className: 'w-[50px]',
+      tdClassName: 'text-end',
+    },
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]

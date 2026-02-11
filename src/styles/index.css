@@ -14,7 +14,20 @@
     @apply overflow-x-hidden;
   }
   body {
-    @apply min-h-svh w-full bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar;
+    @apply min-h-svh w-full bg-background text-foreground antialiased has-[div[data-variant='inset']]:bg-sidebar;
+    background-image:
+      radial-gradient(circle at 16% -4%, var(--app-glow), transparent 36%),
+      radial-gradient(circle at 84% -8%, color-mix(in oklch, var(--app-glow) 70%, transparent), transparent 28%),
+      linear-gradient(180deg, var(--app-gradient-start) 0%, var(--app-gradient-end) 100%);
+  }
+  ::selection {
+    @apply bg-primary/15 text-foreground;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-balance;
   }
 
   /* Override Radix scroll locking for sticky headers */
@@ -35,6 +48,35 @@
     textarea {
       font-size: 16px !important;
     }
+  }
+}
+
+@layer components {
+  .app-shell-gradient {
+    background:
+      radial-gradient(circle at top right, var(--app-glow), transparent 35%),
+      linear-gradient(180deg, var(--app-gradient-start) 0%, var(--background) 46%);
+  }
+
+  .app-surface {
+    background: color-mix(in oklch, var(--card) 86%, transparent);
+    border: 1px solid color-mix(in oklch, var(--border) 86%, transparent);
+    box-shadow: var(--soft-shadow);
+    backdrop-filter: blur(8px);
+  }
+
+  .app-surface-elevated {
+    background: color-mix(in oklch, var(--card) 92%, transparent);
+    border: 1px solid color-mix(in oklch, var(--border) 82%, transparent);
+    box-shadow: var(--elevated-shadow);
+    backdrop-filter: blur(12px);
+  }
+
+  .metric-tile {
+    @apply rounded-2xl border p-5;
+    background: color-mix(in oklch, var(--card) 94%, transparent);
+    border-color: color-mix(in oklch, var(--border) 78%, transparent);
+    box-shadow: var(--soft-shadow);
   }
 }
 

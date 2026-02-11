@@ -79,7 +79,7 @@ export function DataTableBulkActions<TData>({
                 <Button
                   variant='outline'
                   size='icon'
-                  className='size-8'
+                  className='size-9 rounded-lg'
                   aria-label='Update status'
                   title='Update status'
                 >
@@ -115,7 +115,7 @@ export function DataTableBulkActions<TData>({
                 <Button
                   variant='outline'
                   size='icon'
-                  className='size-8'
+                  className='size-9 rounded-lg'
                   aria-label='Update priority'
                   title='Update priority'
                 >
@@ -150,7 +150,7 @@ export function DataTableBulkActions<TData>({
               variant='outline'
               size='icon'
               onClick={() => handleBulkExport()}
-              className='size-8'
+              className='size-9 rounded-lg'
               aria-label='Export tasks'
               title='Export tasks'
             >
@@ -169,7 +169,7 @@ export function DataTableBulkActions<TData>({
               variant='destructive'
               size='icon'
               onClick={() => setShowDeleteConfirm(true)}
-              className='size-8'
+              className='size-9 rounded-lg'
               aria-label='Delete selected tasks'
               title='Delete selected tasks'
             >

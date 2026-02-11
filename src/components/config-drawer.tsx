@@ -48,7 +48,7 @@ export function ConfigDrawer() {
           variant='ghost'
           aria-label='Open theme settings'
           aria-describedby='config-drawer-description'
-          className='rounded-full'
+          className='size-10 rounded-xl border border-transparent bg-background/70 hover:border-border/70'
         >
           <Settings aria-hidden='true' />
         </Button>

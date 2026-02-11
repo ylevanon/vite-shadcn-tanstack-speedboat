@@ -113,7 +113,7 @@ export function TasksTable({ data }: DataTableProps) {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter by title or ID...'
+        searchPlaceholder='Filter by task, assignee, or ID...'
         filters={[
           {
             columnId: 'status',
@@ -127,8 +127,8 @@ export function TasksTable({ data }: DataTableProps) {
           },
         ]}
       />
-      <div className='overflow-hidden rounded-md border'>
-        <Table className='min-w-xl'>
+      <div className='overflow-hidden rounded-2xl border bg-background/75 shadow-sm'>
+        <Table className='min-w-[1100px]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -181,9 +181,9 @@ export function TasksTable({ data }: DataTableProps) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className='h-24 text-center'
+                  className='h-32 text-center text-sm text-muted-foreground'
                 >
-                  No results.
+                  No matching tasks. Try adjusting your filters.
                 </TableCell>
               </TableRow>
             )}
